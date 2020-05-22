@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Unit
 {
     [SerializeField]
     private int lives;
@@ -12,6 +12,11 @@ public class Player : MonoBehaviour
     private float jumpForce;
     private bool isGrounded = false;
 
+    private CharState State
+    {
+        get { return (CharState)animator.GetInteger("State");}
+        set { animator.SetInteger("State",(int) value); }
+    }
 
     new private Rigidbody2D rigidbody;
     private Animator animator;
@@ -29,6 +34,7 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
+        if(isGrounded) State = CharState.Idle;
         if (Input.GetButton("Horizontal")) Run();
         if (isGrounded && Input.GetButtonDown("Jump")) Jump();
     }
@@ -37,10 +43,12 @@ public class Player : MonoBehaviour
     {
         Vector3 direction = transform.right *  Input.GetAxis("Horizontal");
         transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
-        sprite.flipX = direction.x < 0.0F; 
+        sprite.flipX = direction.x < 0.0F;
+        if(isGrounded) State = CharState.Run;
     }
     private void Jump()
     {
+        State = CharState.Jump;
         rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
     private void CheckGround()
@@ -48,5 +56,13 @@ public class Player : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3F);
         Debug.Log(colliders.Length);
         isGrounded = colliders.Length > 1;
+        if (!isGrounded) State = CharState.Jump;
     }
+}
+
+public enum CharState
+{
+    Idle,
+    Run, 
+    Jump
 }
