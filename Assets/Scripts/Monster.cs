@@ -1,23 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class Monster : Unit
 {
     [SerializeField]
-    private float speed;
+    private float speed = 2.0F;
+    private SpriteRenderer sprite;
+    private Vector3 direction;
 
-    
     // Start is called before the first frame update
     private void Awake()
     {
-        
+        sprite = GetComponentInChildren<SpriteRenderer>();
     }
-    void Start()
+    protected void Start()
     {
-        
+        direction = transform.right;
     }
-
+    protected void Update()
+    {
+        Move();
+    }
     protected void OnTriggerEnter2D(Collider2D collider)
     {
         Unit unit = collider.GetComponent<Unit>();
@@ -28,9 +32,11 @@ public class Monster : Unit
         }
     }
 
-    // Update is called once per frame
-    void Update()
+   
+    private void Move()
     {
-        
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position + transform.up * 0.5F + transform.right*direction.x * 0.7F, 0.2F);
+        if (colliders.Length > 0 && colliders.All(x => !x.GetComponent<Player>())) direction *= -1.0F;
+        transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
     }
 }
