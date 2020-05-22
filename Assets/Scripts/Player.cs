@@ -7,6 +7,19 @@ public class Player : Unit
 {
     [SerializeField]
     private int lives;
+    public int Lives
+    {
+        get { return lives; }
+        set {
+            if (value < 3)
+            {
+                lives = value;
+                healthBar.Refresh();
+            }
+        }
+    }
+
+    private HealthBar healthBar;
     [SerializeField]
     private float speed;
     [SerializeField]
@@ -24,6 +37,7 @@ public class Player : Unit
     private SpriteRenderer sprite;
     private void Awake()
     {
+        healthBar = FindObjectOfType<HealthBar>();
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponentInChildren<SpriteRenderer>();
@@ -57,7 +71,8 @@ public class Player : Unit
     public override void ReceiveDamage()
     {
         sprite.color = Color.red;
-        lives--;
+      
+        Lives--;
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
         Debug.Log(lives);
