@@ -51,6 +51,14 @@ public class Player : Unit
         State = CharState.Jump;
         rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
+    public override void ReceiveDamage()
+    {
+        lives--;
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
+        Debug.Log(lives);
+    }
+
     private void CheckGround()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3F);
@@ -58,7 +66,13 @@ public class Player : Unit
         isGrounded = colliders.Length > 1;
         if (!isGrounded) State = CharState.Jump;
     }
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        //Unit unit = collider.gameObject.GetComponent<Unit>();
+        //if (unit) ReceiveDamage();
+    }
 }
+
 
 public enum CharState
 {
