@@ -10,15 +10,14 @@ public class Player : Unit
     public int Lives
     {
         get { return lives; }
-        set {
-            if (value < 3)
-            {
+        set { 
                 lives = value;
                 healthBar.Refresh();
-            }
         }
     }
 
+    [SerializeField]
+    private CamShake shaking;
     private HealthBar healthBar;
     [SerializeField]
     private float speed;
@@ -70,19 +69,19 @@ public class Player : Unit
     }
     public override void ReceiveDamage()
     {
+        shaking.Shake();
         sprite.color = Color.red;
-      
         Lives--;
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
-        Debug.Log(lives);
+     //   Debug.Log(lives);
         Invoke("whiteSprite", 0.3f);
     }
 
     private void CheckGround()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3F);
-        Debug.Log(colliders.Length);
+        //Debug.Log(colliders.Length);
         isGrounded = colliders.Length > 1;
         if (!isGrounded) State = CharState.Jump;
     }
@@ -95,6 +94,8 @@ public class Player : Unit
     {
         sprite.color = Color.white;
     }
+
+    
 }
 
 
