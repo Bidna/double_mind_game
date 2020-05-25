@@ -20,7 +20,7 @@ public class Player : Unit
     private CamShake shaking;
     private HealthBar healthBar;
     [SerializeField]
-    private float speed;
+    public float speed;
     [SerializeField]
     private float jumpForce;
     private bool isGrounded = false;
@@ -74,14 +74,12 @@ public class Player : Unit
         Lives--;
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
-     //   Debug.Log(lives);
         Invoke("whiteSprite", 0.3f);
     }
 
     private void CheckGround()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3F);
-        //Debug.Log(colliders.Length);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3F);       
         isGrounded = colliders.Length > 1;
         if (!isGrounded) State = CharState.Jump;
     }
@@ -95,7 +93,12 @@ public class Player : Unit
         sprite.color = Color.white;
     }
 
-    
+    IEnumerator boostTimer()
+    {
+        speed *= 1.5F;
+        yield return new WaitForSeconds(5);
+        speed /= 1.5F;
+    }
 }
 
 

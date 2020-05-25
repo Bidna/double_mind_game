@@ -6,7 +6,6 @@ public class healing : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log("Lives++");
         Player player = collider.GetComponent<Player>();
         if (player && player.Lives < 3)
         {

@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\heal.cs" />
+    <Compile Include="Assets\Scripts\Boost.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\CamShake.cs" />
     <Compile Include="Assets\Scripts\healing.cs" />
