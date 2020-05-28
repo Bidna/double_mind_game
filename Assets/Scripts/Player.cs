@@ -1,19 +1,27 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Player : Unit
+public sealed class Player : MonoBehaviour
 {
     [SerializeField]
     private int lives;
     public int Lives
     {
-        get { return lives; }
+        get => lives;
         set { 
-                lives = value;
-                healthBar.Refresh();
+            lives = value;
+            healthBar.SetHp(value);
+            if (lives <= 0)
+            {
+                RestartLevel();
+            }
         }
+    }
+
+    private static void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     [SerializeField]
@@ -23,21 +31,21 @@ public class Player : Unit
     public float speed;
     [SerializeField]
     private float jumpForce;
-    private bool isGrounded = false;
+    private bool isGrounded;
 
     private CharState State
     {
-        get { return (CharState)animator.GetInteger("State");}
-        set { animator.SetInteger("State",(int) value); }
+        get => (CharState)animator.GetInteger("State");
+        set => animator.SetInteger("State",(int) value);
     }
 
-    new private Rigidbody2D rigidbody;
+    private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer sprite;
     private void Awake()
     {
         healthBar = FindObjectOfType<HealthBar>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponentInChildren<SpriteRenderer>();
 
@@ -45,8 +53,8 @@ public class Player : Unit
     private void FixedUpdate()
     {
         CheckGround();
-        
     }
+    
     private void Update()
     {
         if(isGrounded) State = CharState.Idle;
@@ -56,7 +64,7 @@ public class Player : Unit
    
     private void Run()
     {
-        Vector3 direction = transform.right *  Input.GetAxis("Horizontal");
+        var direction = transform.right *  Input.GetAxis("Horizontal");
         transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
         sprite.flipX = direction.x < 0.0F;
         if(isGrounded) State = CharState.Run;
@@ -65,35 +73,28 @@ public class Player : Unit
     private void Jump()
     {
         State = CharState.Jump;
-        rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
-    public override void ReceiveDamage()
+    
+    public void ReceiveDamage()
     {
         shaking.Shake();
         sprite.color = Color.red;
         Lives--;
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
-        Invoke("whiteSprite", 0.3f);
+        rb.velocity = Vector3.zero;
+        rb.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
+        Invoke(nameof(SetWhiteSprite), 0.3f);
     }
-
+    
     private void CheckGround()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.3F);       
-        isGrounded = colliders.Length > 1;
+        isGrounded = Physics2D.OverlapCircleAll(transform.position, 0.3F).Length > 1;
         if (!isGrounded) State = CharState.Jump;
     }
-    private void OnTriggerEnter2D(Collider2D collider)
-    {
-        //Unit unit = collider.gameObject.GetComponent<Unit>();
-        //if (unit) ReceiveDamage();
-    }
-    private void whiteSprite()
-    {
-        sprite.color = Color.white;
-    }
 
-    IEnumerator boostTimer()
+    private void SetWhiteSprite() => sprite.color = Color.white;
+
+    public IEnumerator BoostTimer()
     {
         speed *= 1.5F;
         yield return new WaitForSeconds(5);
