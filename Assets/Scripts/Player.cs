@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,13 +15,15 @@ public sealed class Player : MonoBehaviour
             healthBar.SetHp(value);
             if (lives <= 0)
             {
-                RestartLevel();
+                StartCoroutine(RestartLevel());
             }
         }
     }
 
-    private static void RestartLevel()
+    private IEnumerator RestartLevel()
     {
+        deathScreen.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -32,7 +35,8 @@ public sealed class Player : MonoBehaviour
     [SerializeField]
     private float jumpForce;
     private bool isGrounded;
-
+    private float runDirection;
+    
     private CharState State
     {
         get => (CharState)animator.GetInteger("State");
@@ -42,6 +46,10 @@ public sealed class Player : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer sprite;
+    [SerializeField] private GameObject deathScreen;
+    private bool mustJump;
+    private float jumpCooldown;
+
     private void Awake()
     {
         healthBar = FindObjectOfType<HealthBar>();
@@ -57,23 +65,36 @@ public sealed class Player : MonoBehaviour
     
     private void Update()
     {
-        if(isGrounded) State = CharState.Idle;
-        if (Input.GetButton("Horizontal")) Run();
-        if (isGrounded && Input.GetButtonDown("Jump")) Jump();
+        jumpCooldown -= Time.deltaTime;
+        if(isGrounded) 
+            State = CharState.Idle;
+        if (Input.GetButton("Horizontal")) 
+            SetRunDirection(Input.GetAxis("Horizontal"));
+        Run(runDirection);
+        if (Input.GetButtonDown("Jump") || mustJump) Jump();
     }
-   
-    private void Run()
+
+    public void SetRunDirection(float newRunDirection) => runDirection = newRunDirection;
+    public void SetJump() => mustJump = true;
+
+    private void Run(float runDirection)
     {
-        var direction = transform.right *  Input.GetAxis("Horizontal");
+        if (Math.Abs(runDirection) < 0.01f) return;
+        var direction = transform.right *  runDirection;
         transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
         sprite.flipX = direction.x < 0.0F;
         if(isGrounded) State = CharState.Run;
-        
+        SetRunDirection(0);
+
     }
     private void Jump()
     {
+        if (!isGrounded || jumpCooldown > 0)
+            return;
         State = CharState.Jump;
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        mustJump = false;
+        jumpCooldown = 0.1f;
     }
     
     public void ReceiveDamage()
@@ -82,7 +103,7 @@ public sealed class Player : MonoBehaviour
         sprite.color = Color.red;
         Lives--;
         rb.velocity = Vector3.zero;
-        rb.AddForce(transform.up  * 8.0F, ForceMode2D.Impulse);
+        Jump();
         Invoke(nameof(SetWhiteSprite), 0.3f);
     }
     

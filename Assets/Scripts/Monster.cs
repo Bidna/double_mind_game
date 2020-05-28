@@ -22,7 +22,8 @@ public class Monster : MonoBehaviour
         var player = collider.GetComponent<Player>();
         if(player != null)
         {
-            if (Mathf.Abs(player.transform.position.x - transform.position.x) < 0.3F) ReceiveDamage();
+            if (Mathf.Abs(player.transform.position.x - transform.position.x) < 0.5f)
+                ReceiveDamage();
             else player.ReceiveDamage();
         }
     }
