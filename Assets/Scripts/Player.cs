@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -27,37 +28,38 @@ public sealed class Player : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    [SerializeField]
+    
+    public float speed;
+    public float jumpForce;
+    public LayerMask ground;
+    public GameObject deathScreen;
+    
     private CamShake shaking;
     private HealthBar healthBar;
-    [SerializeField]
-    public float speed;
-    [SerializeField]
-    private float jumpForce;
     private bool isGrounded;
     private float runDirection;
     
     private CharState State
     {
-        get => (CharState)animator.GetInteger("State");
-        set => animator.SetInteger("State",(int) value);
+        set => animators.ForEach((x) => x.SetInteger("State",(int) value));
     }
 
     private Rigidbody2D rb;
-    private Animator animator;
-    private SpriteRenderer sprite;
-    [SerializeField] private GameObject deathScreen;
+    private List<Animator> animators;
+    private List<SpriteRenderer> sprites;
+    
     private bool mustJump;
     private float jumpCooldown;
 
     private void Awake()
     {
         healthBar = FindObjectOfType<HealthBar>();
+        shaking = FindObjectOfType<CamShake>();
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        sprite = GetComponentInChildren<SpriteRenderer>();
-
+        animators = new List<Animator>(GetComponentsInChildren<Animator>(true));
+        sprites = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>(true));
     }
+    
     private void FixedUpdate()
     {
         CheckGround();
@@ -71,26 +73,30 @@ public sealed class Player : MonoBehaviour
         if (Input.GetButton("Horizontal")) 
             SetRunDirection(Input.GetAxis("Horizontal"));
         Run(runDirection);
-        if (Input.GetButtonDown("Jump") || mustJump) Jump();
+        if (Input.GetButtonDown("Jump")) SetJump();
+        if (mustJump) Jump();
     }
 
     public void SetRunDirection(float newRunDirection) => runDirection = newRunDirection;
-    public void SetJump() => mustJump = true;
+    public void SetJump()
+    {
+        if (!isGrounded || jumpCooldown >= 0)
+            return;
+        mustJump = true;
+    }
 
     private void Run(float runDirection)
     {
         if (Math.Abs(runDirection) < 0.01f) return;
         var direction = transform.right *  runDirection;
         transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
-        sprite.flipX = direction.x < 0.0F;
+        sprites.ForEach((x)=>x.flipX = direction.x < 0.0F);
         if(isGrounded) State = CharState.Run;
         SetRunDirection(0);
 
     }
     private void Jump()
     {
-        if (!isGrounded || jumpCooldown > 0)
-            return;
         State = CharState.Jump;
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         mustJump = false;
@@ -100,7 +106,7 @@ public sealed class Player : MonoBehaviour
     public void ReceiveDamage()
     {
         shaking.Shake();
-        sprite.color = Color.red;
+        sprites.ForEach((x)=>x.color = Color.red);
         Lives--;
         rb.velocity = Vector3.zero;
         Jump();
@@ -109,11 +115,11 @@ public sealed class Player : MonoBehaviour
     
     private void CheckGround()
     {
-        isGrounded = Physics2D.OverlapCircleAll(transform.position, 0.3F).Length > 1;
+        isGrounded = Physics2D.OverlapBoxAll(transform.position, new Vector2(0.25f, 0.05f), 0,ground).Length > 0;
         if (!isGrounded) State = CharState.Jump;
     }
 
-    private void SetWhiteSprite() => sprite.color = Color.white;
+    private void SetWhiteSprite() => sprites.ForEach((x)=>x.color = Color.white);
 
     public IEnumerator BoostTimer()
     {
