@@ -59,8 +59,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\GameManager.cs" />
+     <Compile Include="Assets\LoginScreen.cs" />
      <Compile Include="Assets\LongPressButton.cs" />
+     <Compile Include="Assets\MainMenu.cs" />
      <Compile Include="Assets\MultiworldObject.cs" />
+     <Compile Include="Assets\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\Boost.cs" />
      <Compile Include="Assets\Scripts\CamShake.cs" />
      <Compile Include="Assets\Scripts\HealthBar.cs" />
