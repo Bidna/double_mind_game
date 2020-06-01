@@ -1,7 +1,19 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 1e3b057af24249748ff873be7fafee47
 ShaderImporter:
   defaultTextures: []
+=======
+<<<<<<< HEAD:Assets/Prefabs/Block Real.prefab.meta
+guid: c0e78e4fb707f224cac07e1704ceb008
+PrefabImporter:
+  externalObjects: {}
+=======
+guid: 1e3b057af24249748ff873be7fafee47
+ShaderImporter:
+  defaultTextures: []
+>>>>>>> 13a4cd08b3a3610dce4fdc38c877d0bc2b3141d9:Assets/TextMesh Pro/Resources/Shaders/TMP_Bitmap-Mobile.shader.meta
+>>>>>>> 13a4cd08b3a3610dce4fdc38c877d0bc2b3141d9
   userData: 
   assetBundleName: 
   assetBundleVariant: 
