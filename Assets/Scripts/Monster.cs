@@ -1,42 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Linq;
-public class Monster : Unit
+public class Monster : MonoBehaviour
 {
     [SerializeField]
     private float speed = 2.0F;
-    private SpriteRenderer sprite;
+
     private Vector3 direction;
 
-    // Start is called before the first frame update
-    private void Awake()
-    {
-        sprite = GetComponentInChildren<SpriteRenderer>();
-    }
     protected void Start()
     {
         direction = transform.right;
     }
+    
     protected void Update()
     {
         Move();
     }
+    
     protected void OnTriggerEnter2D(Collider2D collider)
     {
-        Unit unit = collider.GetComponent<Unit>();
-        if(unit && unit is Player)
+        var player = collider.GetComponent<Player>();
+        if(player != null)
         {
-            if (Mathf.Abs(unit.transform.position.x - transform.position.x) < 0.3F) ReceiveDamage();
-            else unit.ReceiveDamage();
+            if (Mathf.Abs(player.transform.position.x - transform.position.x) < 0.5f)
+                ReceiveDamage();
+            else player.ReceiveDamage();
         }
     }
 
    
     private void Move()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position + transform.up * 0.5F + transform.right*direction.x * 0.7F, 0.2F);
+        var colliders = Physics2D.OverlapCircleAll(transform.position + transform.up * 0.5F + transform.right*direction.x * 0.7F, 0.2F);
         if (colliders.Length > 0 && colliders.All(x => !x.GetComponent<Player>())) direction *= -1.0F;
         transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
+    }
+
+    private void ReceiveDamage()
+    {
+        Destroy(gameObject);
     }
 }
