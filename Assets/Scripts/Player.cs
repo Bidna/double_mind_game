@@ -47,13 +47,15 @@ public sealed class Player : MonoBehaviour
     private Rigidbody2D rb;
     private List<Animator> animators;
     private List<SpriteRenderer> sprites;
+    private GameManager gameManager;
     
     private bool mustJump;
     private float jumpCooldown;
 
     private void Awake()
     {
-        healthBar = FindObjectOfType<HealthBar>();
+        healthBar = FindObjectOfType<HealthBar>(); 
+        gameManager = FindObjectOfType<GameManager>();
         shaking = FindObjectOfType<CamShake>();
         rb = GetComponent<Rigidbody2D>();
         animators = new List<Animator>(GetComponentsInChildren<Animator>(true));
@@ -89,7 +91,7 @@ public sealed class Player : MonoBehaviour
     {
         if (Math.Abs(runDirection) < 0.01f) return;
         var direction = transform.right *  runDirection;
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime * (gameManager.NormalWorld?1.35f:1f));
         sprites.ForEach((x)=>x.flipX = direction.x < 0.0F);
         if(isGrounded) State = CharState.Run;
         SetRunDirection(0);
@@ -98,7 +100,7 @@ public sealed class Player : MonoBehaviour
     private void Jump()
     {
         State = CharState.Jump;
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        rb.AddForce(transform.up * jumpForce * (gameManager.NormalWorld?1f:1.3f), ForceMode2D.Impulse);
         mustJump = false;
         jumpCooldown = 0.1f;
     }
