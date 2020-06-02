@@ -20,7 +20,12 @@ public class Monster : MonoBehaviour
     protected void OnTriggerEnter2D(Collider2D collider)
     {
         var player = collider.GetComponent<Player>();
-        if(player != null)
+
+        if(collider.gameObject.tag == "Obstacle" && Mathf.Abs(collider.transform.position.x - transform.position.x) < 0.5f)
+        {
+            ReceiveDamage();
+        }
+        if (player != null)
         {
             if (Mathf.Abs(player.transform.position.x - transform.position.x) < 0.5f)
                 ReceiveDamage();
