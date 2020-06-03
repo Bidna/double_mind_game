@@ -1,18 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class LongPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+class JumpPlayerButton  : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public UnityEvent onPress;
     void Update()
     {
         if (!isPressed)
             return;
         
-        onPress?.Invoke();
+        FindObjectOfType<Player>()?.SetJump();;
     }
 
     private bool isPressed;

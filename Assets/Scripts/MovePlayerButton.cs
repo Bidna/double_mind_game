@@ -1,18 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class LongPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+class MovePlayerButton  : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public UnityEvent onPress;
+    public float runDirection;
+    
     void Update()
     {
         if (!isPressed)
             return;
         
-        onPress?.Invoke();
+        FindObjectOfType<Player>()?.SetRunDirection(runDirection);;
     }
 
     private bool isPressed;

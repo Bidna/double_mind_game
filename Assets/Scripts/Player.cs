@@ -22,16 +22,10 @@ public sealed class Player : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private int score;
     public int Score
     {
-        get => score;
-        set
-        {
-            score = value;
-            GameObject.Find("Score").GetComponent<Text>().text = score.ToString();
-        }
+        get => levelManager.Score;
+        set => levelManager.Score = value;
     }
 
 

@@ -13,8 +13,9 @@ public class LoadNextLevel : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             FindObjectOfType<Player>().Score += 100;
-            FindObjectOfType<LevelManager>().LoadLevel(FindObjectOfType<LevelManager>().currentLevelIndex +1);
-            Resources.FindObjectsOfTypeAll<LoginScreen>()[0].SendData();
+            int newLevelIndex = FindObjectOfType<LevelManager>().currentLevelIndex + 1;
+            FindObjectOfType<LevelManager>().LoadLevel(newLevelIndex);
+            Resources.FindObjectsOfTypeAll<LoginScreen>()[0].SendData(newLevelIndex);
         }
 
     }

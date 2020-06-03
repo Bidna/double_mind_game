@@ -39,7 +39,7 @@ public class LoginScreen : MonoBehaviour
 
     private static bool authComplete;
     private static string responseString;
-    
+
     private IEnumerator Auth()
     {
         authComplete = false;
@@ -49,52 +49,53 @@ public class LoginScreen : MonoBehaviour
         {
             yield return null;
         }
-        
-     //   if (responseString.Contains("true"))
-     //  {
+
+        if (responseString.Contains("true"))
+        {
             logOutput.color = Color.green;
             logOutput.text = "Login successful!";
-            
-            // authComplete = false;
-            // GetUserAsync();
-            //
-            // while (!authComplete)
-            // {
-            //     yield return null;
-            // }
+
+            authComplete = false;
+            GetUserAsync();
+
+            while (!authComplete)
+            {
+                yield return null;
+            }
+            var dictionary = new Dictionary<string, int>();
             Debug.Log(responseString);
+            try
+            { 
+                dictionary = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string,int>>(responseString);
+            }
+            catch (Exception e)
+            {
+                logOutput.color = Color.red;
+                logOutput.text = e.Message;
+                yield break;
+            }
+            
             yield return new WaitForSecondsRealtime(1);
             //Get user level
             gameObject.SetActive(false);
-            FindObjectOfType<LevelManager>().LoadLevel(0);
-        main_Menu.Stop();
+            FindObjectOfType<LevelManager>().Score = (dictionary["UserPoints"]);
+            FindObjectOfType<LevelManager>().LoadLevel(dictionary["UserLevel"]);
+            main_Menu.Stop();
 
-        logOutput.text = "";
-     //  }
-    //    else
-   //     {
+            logOutput.text = "";
+        }
+        else
+        {
             logOutput.color = Color.red;
             logOutput.text = "Login or password wrong!";
-     //   }
+        }
     }
 
     private async Task GetUserAsync()
     {
         var client = new HttpClient();
-        var values = new Dictionary<string, string>
-        {
-            {"Email", currentUser}
-        };
-
-        var content = new FormUrlEncodedContent(values);
         
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri("http://nedden-001-site1.dtempurl.com/api/Users"),
-            Content = new StringContent("{\"Email\" : \""+currentUser+"\"}"),
-        };
-        var response = await client.SendAsync(request).ConfigureAwait(false);
+        var response = await client.GetAsync("http://nedden-001-site1.dtempurl.com/api/Users?Email=" + currentUser);
         
         responseString = await response.Content.ReadAsStringAsync();
         authComplete = true;
@@ -118,14 +119,13 @@ public class LoginScreen : MonoBehaviour
         authComplete = true;
     }
 
-    private async Task PutAsync()
+    private async Task PutAsync(int newLevelIndex)
     {
         var client = new HttpClient();
-        currentUser = loginInput.text;
         var values = new Dictionary<string, string>
         {
             {"Email", currentUser},
-            {"UserLevel", FindObjectOfType<LevelManager>().currentLevelIndex.ToString()},
+            {"UserLevel", newLevelIndex.ToString()},
             {"UserPoints", FindObjectOfType<Player>().Score.ToString()}
         };
 
@@ -137,15 +137,15 @@ public class LoginScreen : MonoBehaviour
         authComplete = true;
     }
     
-    public void SendData()
+    public void SendData(int newLevelIndex)
     {
-        FindObjectOfType<LevelManager>().StartCoroutine(EnumSendData());
+        FindObjectOfType<LevelManager>().StartCoroutine(EnumSendData(newLevelIndex));
     }
 
-    IEnumerator EnumSendData()
+    IEnumerator EnumSendData(int newLevelIndex)
     {
         authComplete = false;
-        PutAsync();
+        PutAsync(newLevelIndex);
         
         while (!authComplete)
         {

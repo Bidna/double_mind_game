@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -13,6 +14,19 @@ public class LevelManager : MonoBehaviour
     public AudioSource ambient;
     [SerializeField]
     public AudioSource death;
+    
+    private int startLevelScore;
+    private int score;
+    public int Score
+    {
+        get => score;
+        set
+        {
+            score = value;
+            GameObject.Find("Score").GetComponent<Text>().text = score.ToString();
+        }
+    }
+    
     public void LoadLevel(int level)
     {
         if (currentLevel != null)
@@ -20,6 +34,8 @@ public class LevelManager : MonoBehaviour
             Destroy(currentLevel.gameObject);
             currentLevel = null;
         }
+        startLevelScore = Score;
+
         ambient.Play();
         currentLevelIndex = level;
         currentLevel = Instantiate(levelPrefabs[level].gameObject).GetComponent<Level>();
@@ -28,6 +44,7 @@ public class LevelManager : MonoBehaviour
 
     public IEnumerator GameOver()
     {
+        Score = startLevelScore;
         ambient.Stop();
         death.Play();
         deathScreen.SetActive(true);
