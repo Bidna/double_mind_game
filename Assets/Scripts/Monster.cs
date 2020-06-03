@@ -28,7 +28,11 @@ public class Monster : MonoBehaviour
         if (player != null)
         {
             if (Mathf.Abs(player.transform.position.x - transform.position.x) < 0.5f)
+            {
+                player.score += 10;
+
                 ReceiveDamage();
+            }
             else player.ReceiveDamage();
         }
     }

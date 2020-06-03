@@ -16,23 +16,16 @@ public sealed class Player : MonoBehaviour
             healthBar.SetHp(value);
             if (lives <= 0)
             {
-                StartCoroutine(RestartLevel());
+                StartCoroutine(levelManager.GameOver());
             }
         }
     }
 
-    private IEnumerator RestartLevel()
-    {
-        deathScreen.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
 
-    
+    public int score;
     public float speed;
     public float jumpForce;
     public LayerMask ground;
-    public GameObject deathScreen;
     
     private CamShake shaking;
     private HealthBar healthBar;
@@ -44,6 +37,7 @@ public sealed class Player : MonoBehaviour
         set => animators.ForEach((x) => x.SetInteger("State",(int) value));
     }
 
+    private LevelManager levelManager;
     private Rigidbody2D rb;
     private List<Animator> animators;
     private List<SpriteRenderer> sprites;
@@ -55,6 +49,7 @@ public sealed class Player : MonoBehaviour
     private void Awake()
     {
         healthBar = FindObjectOfType<HealthBar>(); 
+        levelManager = FindObjectOfType<LevelManager>(); 
         gameManager = FindObjectOfType<GameManager>();
         shaking = FindObjectOfType<CamShake>();
         rb = GetComponent<Rigidbody2D>();
