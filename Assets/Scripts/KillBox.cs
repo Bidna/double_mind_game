@@ -8,7 +8,7 @@ internal class KillBox : MonoBehaviour
         {
             var player = collider.GetComponent<Player>();
             player.Lives -= player.Lives;
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
        
     }
