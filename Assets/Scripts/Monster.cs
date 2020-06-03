@@ -5,6 +5,9 @@ public class Monster : MonoBehaviour
     [SerializeField]
     private float speed = 2.0F;
 
+    [SerializeField]
+    public AudioSource kill;
+
     private Vector3 direction;
 
     protected void Start()
@@ -28,7 +31,11 @@ public class Monster : MonoBehaviour
         if (player != null)
         {
             if (Mathf.Abs(player.transform.position.x - transform.position.x) < 0.5f)
+            {
+                player.Score += 10;
+                kill.Play();
                 ReceiveDamage();
+            }
             else player.ReceiveDamage();
         }
     }

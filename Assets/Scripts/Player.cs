@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public sealed class Player : MonoBehaviour
 {
@@ -16,23 +17,35 @@ public sealed class Player : MonoBehaviour
             healthBar.SetHp(value);
             if (lives <= 0)
             {
-                StartCoroutine(RestartLevel());
+                StartCoroutine(levelManager.GameOver());
             }
         }
     }
 
-    private IEnumerator RestartLevel()
+    [SerializeField]
+    private int score;
+    public int Score
     {
-        deathScreen.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        get => score;
+        set
+        {
+            score = value;
+            GameObject.Find("Score").GetComponent<Text>().text = score.ToString();
+        }
     }
 
-    
+
+    [SerializeField]
+    public AudioSource jump;
+    [SerializeField]
+    public AudioSource damage;
+    [SerializeField]
+    public AudioSource run;
+    [SerializeField]
+    public AudioSource boost;
     public float speed;
     public float jumpForce;
     public LayerMask ground;
-    public GameObject deathScreen;
     
     private CamShake shaking;
     private HealthBar healthBar;
@@ -44,6 +57,7 @@ public sealed class Player : MonoBehaviour
         set => animators.ForEach((x) => x.SetInteger("State",(int) value));
     }
 
+    private LevelManager levelManager;
     private Rigidbody2D rb;
     private List<Animator> animators;
     private List<SpriteRenderer> sprites;
@@ -55,6 +69,7 @@ public sealed class Player : MonoBehaviour
     private void Awake()
     {
         healthBar = FindObjectOfType<HealthBar>(); 
+        levelManager = FindObjectOfType<LevelManager>(); 
         gameManager = FindObjectOfType<GameManager>();
         shaking = FindObjectOfType<CamShake>();
         rb = GetComponent<Rigidbody2D>();
@@ -93,12 +108,17 @@ public sealed class Player : MonoBehaviour
         var direction = transform.right *  runDirection;
         transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, speed * Time.deltaTime * (gameManager.NormalWorld?1.35f:1f));
         sprites.ForEach((x)=>x.flipX = direction.x < 0.0F);
-        if(isGrounded) State = CharState.Run;
+        if (isGrounded)
+        {
+            if(!run.isPlaying) run.Play();
+            State = CharState.Run;
+        }
         SetRunDirection(0);
 
     }
     private void Jump()
     {
+        jump.Play();
         State = CharState.Jump;
         rb.AddForce(transform.up * jumpForce * (gameManager.NormalWorld?1f:1.3f), ForceMode2D.Impulse);
         mustJump = false;
@@ -106,7 +126,8 @@ public sealed class Player : MonoBehaviour
     }
     
     public void ReceiveDamage()
-    {
+    {      
+        damage.Play();
         shaking.Shake();
         sprites.ForEach((x)=>x.color = Color.red);
         Lives--;
@@ -125,6 +146,7 @@ public sealed class Player : MonoBehaviour
 
     public IEnumerator BoostTimer()
     {
+        boost.Play();
         speed *= 1.5F;
         yield return new WaitForSeconds(5);
         speed /= 1.5F;

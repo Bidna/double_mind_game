@@ -62,18 +62,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\LoginScreen.cs" />
-    <Compile Include="Assets\LongPressButton.cs" />
-    <Compile Include="Assets\MainMenu.cs" />
-    <Compile Include="Assets\MultiworldObject.cs" />
-    <Compile Include="Assets\PauseMenu.cs" />
+    <Compile Include="Assets\LoadNextLevel.cs" />
     <Compile Include="Assets\Scripts\Boost.cs" />
     <Compile Include="Assets\Scripts\CamShake.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Heart.cs" />
     <Compile Include="Assets\Scripts\KillBox.cs" />
+    <Compile Include="Assets\Scripts\Level.cs" />
+    <Compile Include="Assets\Scripts\LevelManager.cs" />
+    <Compile Include="Assets\Scripts\LoginScreen.cs" />
+    <Compile Include="Assets\Scripts\LongPressButton.cs" />
+    <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Monster.cs" />
+    <Compile Include="Assets\Scripts\MultiworldObject.cs" />
+    <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\SmoothFollowTarget.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

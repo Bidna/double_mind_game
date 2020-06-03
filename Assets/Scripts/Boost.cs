@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Boost : MonoBehaviour
 {
+    
     private void OnTriggerEnter2D(Collider2D collider)
     {
         var player = FindObjectOfType<Player>();
