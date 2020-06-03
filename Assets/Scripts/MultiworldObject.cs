@@ -7,10 +7,15 @@ public class MultiworldObject : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.OnWorldChange += delegate(bool x)
+        GameManager.OnWorldChange += delegate(bool NormalWorld)
         {
-            if (normalWorldVersion != null) normalWorldVersion.SetActive(x);
-            if (paranormalWorldVersion != null) paranormalWorldVersion.SetActive(!x);
+            if (normalWorldVersion != null) normalWorldVersion.SetActive(NormalWorld);
+            if (paranormalWorldVersion != null) paranormalWorldVersion.SetActive(!NormalWorld);
         };
+    }
+    private void OnEnable()
+    {
+        if (normalWorldVersion != null) normalWorldVersion.SetActive(FindObjectOfType<GameManager>().NormalWorld);
+        if (paranormalWorldVersion != null) paranormalWorldVersion.SetActive(!FindObjectOfType<GameManager>().NormalWorld);
     }
 }

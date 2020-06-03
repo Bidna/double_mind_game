@@ -8,10 +8,7 @@ using UnityEngine;
 
 public class LoginScreen : MonoBehaviour
 {
-<<<<<<< HEAD
     public AudioSource main_Menu;
-=======
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
     public GameObject mainMenu;
     public TMP_InputField loginInput;
     public TMP_InputField passwordInput;
@@ -53,13 +50,8 @@ public class LoginScreen : MonoBehaviour
             yield return null;
         }
         
-<<<<<<< HEAD
      //   if (responseString.Contains("true"))
      //  {
-=======
-        if (responseString.Contains("true"))
-        {
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
             logOutput.color = Color.green;
             logOutput.text = "Login successful!";
             
@@ -74,7 +66,6 @@ public class LoginScreen : MonoBehaviour
             yield return new WaitForSecondsRealtime(1);
             //Get user level
             gameObject.SetActive(false);
-<<<<<<< HEAD
             FindObjectOfType<LevelManager>().LoadLevel(0);
         main_Menu.Stop();
 
@@ -85,16 +76,6 @@ public class LoginScreen : MonoBehaviour
             logOutput.color = Color.red;
             logOutput.text = "Login or password wrong!";
      //   }
-=======
-            FindObjectOfType<LevelManager>().LoadLevel(0); 
-            logOutput.text = "";
-        }
-        else
-        {
-            logOutput.color = Color.red;
-            logOutput.text = "Login or password wrong!";
-        }
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
     }
 
     private async Task GetUserAsync()
@@ -145,11 +126,7 @@ public class LoginScreen : MonoBehaviour
         {
             {"Email", currentUser},
             {"UserLevel", FindObjectOfType<LevelManager>().currentLevelIndex.ToString()},
-<<<<<<< HEAD
             {"UserPoints", FindObjectOfType<Player>().Score.ToString()}
-=======
-            {"UserPoints", FindObjectOfType<Player>().score.ToString()}
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
         };
 
         var content = new FormUrlEncodedContent(values);

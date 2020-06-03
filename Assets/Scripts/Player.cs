@@ -22,7 +22,6 @@ public sealed class Player : MonoBehaviour
         }
     }
 
-<<<<<<< HEAD
     [SerializeField]
     private int score;
     public int Score
@@ -44,10 +43,6 @@ public sealed class Player : MonoBehaviour
     public AudioSource run;
     [SerializeField]
     public AudioSource boost;
-=======
-
-    public int score;
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
     public float speed;
     public float jumpForce;
     public LayerMask ground;

@@ -1,17 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: a898cbfeaa2d14fbaa4ec1d03bef4833
 PrefabImporter:
-=======
-<<<<<<< HEAD:Assets/Sound.meta
-guid: e15aa38a5756dd144ba48701e8c58b6b
-folderAsset: yes
-DefaultImporter:
-=======
-guid: a898cbfeaa2d14fbaa4ec1d03bef4833
-PrefabImporter:
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b:Assets/Prefabs/Level1.prefab.meta
->>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
   externalObjects: {}
   userData: 
   assetBundleName: 
