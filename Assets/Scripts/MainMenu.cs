@@ -5,10 +5,11 @@ using UnityEngine;
 public class MainMenu : MonoBehaviour
 {
     public GameObject loginScreen;
-    
+    public AudioSource mainMenu;
     public void OnEnable()
     {
         Time.timeScale = 0;
+        mainMenu.Play();
     }
     public void OnDisable()
     {

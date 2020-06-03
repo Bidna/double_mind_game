@@ -1,6 +1,17 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: f7a1605e1648b4438be77e54ec482391
 PrefabImporter:
+=======
+<<<<<<< HEAD:Assets/Звуки-20200603T122510Z-001.meta
+guid: 7fbb16c0932203b4fbac1ae3d920a2df
+folderAsset: yes
+DefaultImporter:
+=======
+guid: f7a1605e1648b4438be77e54ec482391
+PrefabImporter:
+>>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b:Assets/Prefabs/Level2.prefab.meta
+>>>>>>> ac6f58bb5f66a43cbfd58124bb94f94b7e46d44b
   externalObjects: {}
   userData: 
   assetBundleName: 

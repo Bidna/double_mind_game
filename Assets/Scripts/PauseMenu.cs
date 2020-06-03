@@ -6,10 +6,11 @@ using UnityEngine;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject mainMenu;
-    
+  
     public void OnEnable()
     {
         Time.timeScale = 0;
+        
     }
     public void OnDisable()
     {
